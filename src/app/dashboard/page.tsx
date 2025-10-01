@@ -44,7 +44,7 @@ export default function DashboardPage() {
       const newApplication = await createApplication(app);
       if (newApplication) {
         setApplications(prev => [newApplication, ...prev]);
-        toast({ title: "Application Added", description: `Your new application for ${app.title} has been added.` });
+        toast({ title: "Application Added", description: `Your new application for ${app.job_title} has been added.` });
       }
     } catch(error) {
         console.error('Error adding application:', error);
@@ -61,7 +61,7 @@ export default function DashboardPage() {
         const updatedApp = await updateApplicationInDb(app);
         if(updatedApp) {
             setApplications(prev => prev.map(a => a.id === updatedApp.id ? updatedApp : a));
-            toast({ title: "Application Updated", description: `Details for ${app.title} at ${app.company} have been saved.` });
+            toast({ title: "Application Updated", description: `Details for ${app.job_title} at ${app.company_name} have been saved.` });
         }
     } catch (error) {
         console.error('Error updating application:', error);

@@ -6,8 +6,8 @@ export type Status = z.infer<typeof statusEnum>;
 
 export const applicationSchema = z.object({
   id: z.string(),
-  title: z.string().min(2, "Title must be at least 2 characters long."),
-  company: z.string().min(2, "Company must be at least 2 characters long."),
+  job_title: z.string().min(2, "Title must be at least 2 characters long."),
+  company_name: z.string().min(2, "Company must be at least 2 characters long."),
   dateApplied: z.date({
     required_error: "A date of application is required.",
   }),

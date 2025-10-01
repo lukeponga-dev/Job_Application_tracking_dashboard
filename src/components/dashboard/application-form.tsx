@@ -54,8 +54,8 @@ export default function ApplicationForm({ isOpen, setIsOpen, application, onAdd,
       const defaultValues = application
         ? { ...application, dateApplied: application.dateApplied ? new Date(application.dateApplied) : new Date() }
         : {
-            title: '',
-            company: '',
+            job_title: '',
+            company_name: '',
             dateApplied: new Date(),
             status: 'Applied' as const,
             site_applied_on: '',
@@ -87,7 +87,7 @@ export default function ApplicationForm({ isOpen, setIsOpen, application, onAdd,
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
             <FormField
               control={form.control}
-              name="title"
+              name="job_title"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Job Title</FormLabel>
@@ -100,7 +100,7 @@ export default function ApplicationForm({ isOpen, setIsOpen, application, onAdd,
             />
             <FormField
               control={form.control}
-              name="company"
+              name="company_name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Company</FormLabel>

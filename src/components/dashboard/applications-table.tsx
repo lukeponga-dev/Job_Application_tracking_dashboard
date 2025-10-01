@@ -119,8 +119,8 @@ export default function ApplicationsTable({ applications, onAdd, onUpdate, onDel
                     filteredApplications.map(app => (
                       <TableRow key={app.id}>
                         <TableCell>
-                          <div className="font-medium">{app.title}</div>
-                          <div className="text-sm text-muted-foreground">{app.company}</div>
+                          <div className="font-medium">{app.job_title}</div>
+                          <div className="text-sm text-muted-foreground">{app.company_name}</div>
                         </TableCell>
                         <TableCell className="hidden md:table-cell">{format(new Date(app.dateApplied), 'LLL dd, y')}</TableCell>
                         <TableCell>
