@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect } from 'react';
+import React, 'useEffect' from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CalendarIcon } from 'lucide-react';
@@ -59,6 +59,7 @@ export default function ApplicationForm({ isOpen, setIsOpen, application, onAdd,
             company: '',
             dateApplied: new Date(),
             status: 'Applied' as const,
+            site_applied_on: '',
           };
       form.reset(defaultValues);
     }
@@ -107,6 +108,19 @@ export default function ApplicationForm({ isOpen, setIsOpen, application, onAdd,
                   <FormLabel>Company</FormLabel>
                   <FormControl>
                     <Input placeholder="e.g. Tech Solutions Inc." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="site_applied_on"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Website/Link</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g. https://linkedin.com/jobs/..." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
