@@ -25,7 +25,7 @@ export default function DashboardLayout({
   const { user, signOut } = useAuth();
   return (
     <SidebarProvider>
-      <Sidebar>
+      <Sidebar variant="inset" collapsible="icon">
         <SidebarContent>
           <SidebarHeader>
             <div className="flex items-center gap-2">
@@ -64,7 +64,7 @@ export default function DashboardLayout({
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
-        <header className="flex h-14 items-center justify-between border-b bg-background px-4 shadow-sm sm:px-6 md:justify-end">
+        <header className="flex h-14 items-center justify-between border-b border-border/20 bg-transparent px-4 shadow-sm sm:px-6 md:justify-end">
             <SidebarTrigger className="md:hidden" />
             <div className='flex items-center gap-4'>
               <ThemeToggle />
