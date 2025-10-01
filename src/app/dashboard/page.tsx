@@ -37,7 +37,12 @@ export default function DashboardPage() {
       }
     };
 
-    fetchApplications();
+    if (user) {
+      fetchApplications();
+    } else {
+        // If there's no user, we're not loading anything.
+        setIsLoading(false);
+    }
   }, [user, toast]);
 
   const addApplication = async (app: Omit<JobApplication, 'id' | 'user_id'>) => {
