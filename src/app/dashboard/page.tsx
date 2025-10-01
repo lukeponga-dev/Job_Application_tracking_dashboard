@@ -55,7 +55,7 @@ export default function DashboardPage() {
         return;
     }
     try {
-      const newApplication = await createApplication({...app, user_id: user.id });
+      const newApplication = await createApplication(app);
       if (newApplication) {
         setApplications(prev => [newApplication, ...prev]);
         toast({ title: "Application Added", description: `Your new application for ${app.job_title} has been added.` });

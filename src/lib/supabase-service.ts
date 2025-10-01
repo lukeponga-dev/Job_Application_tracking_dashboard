@@ -1,4 +1,5 @@
 
+
 'use server';
 
 import { createClient } from './supabase/server';
@@ -42,7 +43,7 @@ export async function getApplications(): Promise<JobApplication[]> {
     return data.map(fromApiResponse);
 }
 
-export async function createApplication(application: Omit<JobApplication, 'id'>): Promise<JobApplication | null> {
+export async function createApplication(application: Omit<JobApplication, 'id' | 'user_id'>): Promise<JobApplication | null> {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
@@ -50,7 +51,7 @@ export async function createApplication(application: Omit<JobApplication, 'id'>)
         throw new Error('User not authenticated');
     }
     
-    const { job_title, company_name, dateApplied, status, site_applied_on, notes, user_id } = application;
+    const { job_title, company_name, dateApplied, status, site_applied_on, notes } = application;
     
     const { data, error } = await supabase
         .from('job_applications')
@@ -61,7 +62,7 @@ export async function createApplication(application: Omit<JobApplication, 'id'>)
             status, 
             site_applied_on: site_applied_on || null,
             notes: notes || null,
-            user_id
+            user_id: user.id
         }])
         .select()
         .single();
