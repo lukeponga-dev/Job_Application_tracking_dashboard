@@ -15,6 +15,7 @@ import {
 import { LayoutDashboard, LogOut, User } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/contexts/auth-context';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function DashboardLayout({
   children,
@@ -65,7 +66,9 @@ export default function DashboardLayout({
       <SidebarInset>
         <header className="flex h-12 items-center justify-between border-b bg-background px-4 md:justify-end">
             <SidebarTrigger className="md:hidden" />
-            <div>{/* Header Content */}</div>
+            <div className='flex items-center gap-4'>
+              <ThemeToggle />
+            </div>
         </header>
         <main className="flex-1 overflow-y-auto">{children}</main>
       </SidebarInset>
