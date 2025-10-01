@@ -1,3 +1,4 @@
+
 import { z } from "zod";
 
 export const statusEnum = z.enum(["Applied", "Interviewing", "Offer", "Rejected"]);
