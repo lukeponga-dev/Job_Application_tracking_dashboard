@@ -48,6 +48,11 @@ export default function ApplicationsTable({ applications, onAdd, onUpdate, onDel
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingApplication, setEditingApplication] = useState<JobApplication | undefined>(undefined);
 
+  const handleAddNewClick = () => {
+    setEditingApplication(undefined);
+    setIsFormOpen(true);
+  };
+
   const handleEditClick = (app: JobApplication) => {
     setEditingApplication(app);
     setIsFormOpen(true);
@@ -77,6 +82,23 @@ export default function ApplicationsTable({ applications, onAdd, onUpdate, onDel
       default: return 'default';
     }
   }
+
+  const EmptyState = () => (
+    <div className="text-center h-48 flex flex-col justify-center items-center">
+      <h3 className="text-lg font-semibold text-foreground mb-2">
+        {filter === 'All' ? 'No Applications Yet' : `No ${filter} Applications`}
+      </h3>
+      <p className="text-sm text-muted-foreground mb-4">
+        {filter === 'All' ? 'Get started by adding your first job application.' : `You haven't marked any applications as ${filter}.`}
+      </p>
+      {filter === 'All' && (
+         <Button onClick={handleAddNewClick} size="sm" className="gap-2">
+            <PlusCircle className="h-4 w-4" />
+            Add First Application
+        </Button>
+      )}
+    </div>
+  );
 
   return (
     <>
@@ -144,8 +166,8 @@ export default function ApplicationsTable({ applications, onAdd, onUpdate, onDel
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={4} className="h-24 text-center">
-                        No applications found for this status.
+                      <TableCell colSpan={4}>
+                         <EmptyState />
                       </TableCell>
                     </TableRow>
                   )}
@@ -189,9 +211,7 @@ export default function ApplicationsTable({ applications, onAdd, onUpdate, onDel
                   </Card>
                 ))
                 ) : (
-                    <div className="h-24 text-center flex items-center justify-center">
-                      No applications found for this status.
-                    </div>
+                    <EmptyState />
                 )}
             </div>
         </CardContent>

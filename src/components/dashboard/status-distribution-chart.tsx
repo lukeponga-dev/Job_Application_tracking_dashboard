@@ -102,8 +102,9 @@ export default function StatusDistributionChart({ applications }: StatusDistribu
                 </ResponsiveContainer>
             </ChartContainer>
         ) : (
-            <div className="flex h-[250px] items-center justify-center text-center text-sm text-muted-foreground">
-                No application data to display. <br/> Add some applications to see your status distribution.
+            <div className="flex flex-col h-[250px] items-center justify-center text-center text-sm text-muted-foreground p-4">
+                <p className="mb-2">No application data to display.</p>
+                <p className="text-xs">Add an application to see your status distribution.</p>
             </div>
         )}
       </CardContent>

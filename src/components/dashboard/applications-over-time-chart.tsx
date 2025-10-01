@@ -6,7 +6,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "rec
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartConfig, ChartContainer, ChartTooltipContent } from "@/components/ui/chart"
 import type { JobApplication } from "@/lib/types"
-import { subDays, format, startOfWeek, startOfMonth, eachDayOfInterval } from "date-fns"
+import { subDays, format, eachDayOfInterval } from "date-fns"
 
 interface ApplicationsOverTimeChartProps {
   applications: JobApplication[];
@@ -70,8 +70,9 @@ export default function ApplicationsOverTimeChart({ applications }: Applications
             </ResponsiveContainer>
         </ChartContainer>
          ) : (
-            <div className="flex h-[250px] items-center justify-center text-center text-sm text-muted-foreground">
-                Not enough data to display trends. <br/> Add more applications to see your progress.
+            <div className="flex flex-col h-[250px] items-center justify-center text-center text-sm text-muted-foreground p-4">
+                <p className="mb-2">Not enough data to display trends.</p>
+                <p className="text-xs">Add more applications to see your progress over time.</p>
             </div>
         )}
       </CardContent>

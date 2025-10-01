@@ -82,7 +82,7 @@ export default function ApplicationForm({ isOpen, setIsOpen, application, onAdd,
         <DialogHeader>
           <DialogTitle>{application ? 'Edit Application' : 'Add New Application'}</DialogTitle>
           <DialogDescription>
-            {application ? 'Update the details of your job application.' : 'Enter the details for a new job application.'}
+            {application ? 'Update the details of your job application.' : 'Track a new job application by entering the details below.'}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
