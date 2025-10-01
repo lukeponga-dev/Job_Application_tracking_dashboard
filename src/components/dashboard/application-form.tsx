@@ -45,9 +45,11 @@ interface ApplicationFormProps {
   onUpdate: (app: JobApplication) => Promise<void>;
 }
 
+const formSchema = applicationSchema.omit({ id: true, user_id: true });
+
 export default function ApplicationForm({ isOpen, setIsOpen, application, onAdd, onUpdate }: ApplicationFormProps) {
-  const form = useForm<Omit<JobApplication, 'id' | 'user_id'>>({
-    resolver: zodResolver(applicationSchema.omit({ id: true, user_id: true })),
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
   });
   
   useEffect(() => {
@@ -66,7 +68,7 @@ export default function ApplicationForm({ isOpen, setIsOpen, application, onAdd,
     }
   }, [application, form, isOpen]);
 
-  const onSubmit = async (data: Omit<JobApplication, 'id' | 'user_id'>) => {
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
     if (application?.id) {
       await onUpdate({ ...data, id: application.id, user_id: application.user_id });
     } else {
@@ -119,7 +121,7 @@ export default function ApplicationForm({ isOpen, setIsOpen, application, onAdd,
                 <FormItem>
                   <FormLabel>Website/Link</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g. https://linkedin.com/jobs/..." {...field} />
+                    <Input placeholder="e.g. https://linkedin.com/jobs/..." {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -1,5 +1,4 @@
 
-
 'use server';
 
 import { createClient } from './supabase/server';
@@ -14,8 +13,8 @@ const fromApiResponse = (item: any): JobApplication => {
         company_name: item.company_name,
         dateApplied: new Date(item.date_applied),
         status: item.status,
-        site_applied_on: item.site_applied_on || '',
-        notes: item.notes || '',
+        site_applied_on: item.site_applied_on || null,
+        notes: item.notes || null,
     };
     return applicationSchema.parse(jobApplication);
 };
