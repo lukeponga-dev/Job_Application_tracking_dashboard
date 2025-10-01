@@ -12,10 +12,13 @@ import {
   SidebarFooter,
   SidebarInset,
 } from '@/components/ui/sidebar';
-import { LayoutDashboard, LogOut, User } from 'lucide-react';
+import { LayoutDashboard, LogOut, User, PlusCircle, Settings } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/contexts/auth-context';
 import { ThemeToggle } from '@/components/theme-toggle';
+import ApplicationForm from '@/components/dashboard/application-form';
+import { useState } from 'react';
+import type { JobApplication } from '@/lib/types';
 
 export default function DashboardLayout({
   children,
@@ -23,6 +26,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { user, signOut } = useAuth();
+
   return (
     <SidebarProvider>
       <Sidebar variant="inset" collapsible="icon">
@@ -47,8 +51,14 @@ export default function DashboardLayout({
             <SidebarMenuItem>
               <SidebarMenuButton href="/dashboard" isActive>
                 <LayoutDashboard />
-                Dashboard
+                My Applications
               </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+                <SidebarMenuButton href="/profile">
+                    <Settings />
+                    Profile
+                </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarContent>
@@ -64,13 +74,13 @@ export default function DashboardLayout({
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
-        <header className="flex h-14 items-center justify-between border-b border-border/20 bg-transparent px-4 shadow-sm sm:px-6 md:justify-end">
+        <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-border/20 bg-background/80 px-4 shadow-sm backdrop-blur-sm sm:px-6 md:justify-end">
             <SidebarTrigger className="md:hidden" />
             <div className='flex items-center gap-4'>
               <ThemeToggle />
             </div>
         </header>
-        <main className="flex-1 overflow-y-auto">{children}</main>
+        <main className="flex-1">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

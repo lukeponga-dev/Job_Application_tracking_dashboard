@@ -48,11 +48,6 @@ export default function ApplicationsTable({ applications, onAdd, onUpdate, onDel
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingApplication, setEditingApplication] = useState<JobApplication | undefined>(undefined);
 
-  const handleAddClick = () => {
-    setEditingApplication(undefined);
-    setIsFormOpen(true);
-  };
-
   const handleEditClick = (app: JobApplication) => {
     setEditingApplication(app);
     setIsFormOpen(true);
@@ -83,16 +78,7 @@ export default function ApplicationsTable({ applications, onAdd, onUpdate, onDel
         onUpdate={onUpdate}
       />
       <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between gap-4">
-            <CardTitle>My Applications</CardTitle>
-            <Button onClick={handleAddClick} size="sm" className="gap-2 shrink-0">
-              <PlusCircle className="h-4 w-4" />
-              Add Application
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
+        <CardContent className='pt-6'>
             <Tabs value={filter} onValueChange={(value) => setFilter(value as Status | 'All')}>
               <TabsList className="grid w-full grid-cols-3 sm:grid-cols-5 h-auto">
                 {tabs.map((tab) => (

@@ -12,6 +12,9 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/auth-context';
 import StatusDistributionChart from '@/components/dashboard/status-distribution-chart';
 import ApplicationsOverTimeChart from '@/components/dashboard/applications-over-time-chart';
+import { Button } from '../ui/button';
+import { PlusCircle } from 'lucide-react';
+import ApplicationForm from './application-form';
 
 interface DashboardClientProps {
   initialApplications: JobApplication[];
@@ -20,12 +23,20 @@ interface DashboardClientProps {
 export default function DashboardClient({ initialApplications }: DashboardClientProps) {
   const [applications, setApplications] = useState<JobApplication[]>(initialApplications);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingApplication, setEditingApplication] = useState<JobApplication | undefined>(undefined);
+
   const { toast } = useToast();
   const { user } = useAuth();
 
   useEffect(() => {
     setApplications(initialApplications);
   }, [initialApplications]);
+
+  const handleAddClick = () => {
+    setEditingApplication(undefined);
+    setIsFormOpen(true);
+  };
 
   const addApplication = async (app: Omit<JobApplication, 'id' | 'user_id'>) => {
     if (!user) {
@@ -86,8 +97,19 @@ export default function DashboardClient({ initialApplications }: DashboardClient
 
   return (
       <div className="p-4 sm:p-6 md:p-8 space-y-8">
+        <ApplicationForm
+            isOpen={isFormOpen}
+            setIsOpen={setIsFormOpen}
+            application={editingApplication}
+            onAdd={addApplication}
+            onUpdate={updateApplication}
+        />
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <h1 className="text-3xl font-bold tracking-tight text-foreground">JobTracker Dashboard</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">My Applications</h1>
+            <Button onClick={handleAddClick} size="sm" className="gap-2 shrink-0">
+              <PlusCircle className="h-4 w-4" />
+              Add Application
+            </Button>
         </div>
         {isLoading ? (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
