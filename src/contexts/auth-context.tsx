@@ -13,6 +13,7 @@ interface AuthContextType {
   signIn: (credentials: SignInWithPasswordCredentials) => Promise<{ error: AuthError | null }>
   signUp: (credentials: SignUpWithPasswordCredentials) => Promise<{ error: AuthError | null }>
   signOut: () => Promise<void>
+  signInWithGoogle: () => Promise<{ error: AuthError | null }>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -55,8 +56,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut()
   }
 
+  const signInWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${location.origin}/auth/callback`,
+      },
+    });
+    return { error };
+  }
+
   return (
-    <AuthContext.Provider value={{ user, session, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, session, signIn, signUp, signOut, signInWithGoogle }}>
       {children}
     </AuthContext.Provider>
   )
