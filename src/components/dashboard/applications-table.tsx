@@ -68,6 +68,16 @@ export default function ApplicationsTable({ applications, onAdd, onUpdate, onDel
   
   const tabs: (Status | 'All')[] = ['All', 'Applied', 'Interviewing', 'Offer', 'Rejected'];
 
+  const getBadgeVariant = (status: Status) => {
+    switch (status) {
+      case 'Applied': return 'applied';
+      case 'Interviewing': return 'interviewing';
+      case 'Offer': return 'offer';
+      case 'Rejected': return 'destructive';
+      default: return 'default';
+    }
+  }
+
   return (
     <>
       <ApplicationForm
@@ -110,7 +120,7 @@ export default function ApplicationsTable({ applications, onAdd, onUpdate, onDel
                         </TableCell>
                         <TableCell>{format(new Date(app.dateApplied), 'LLL dd, y')}</TableCell>
                         <TableCell>
-                          <Badge variant={app.status === 'Rejected' ? 'destructive' : app.status.toLowerCase() as any} className="gap-1 items-center">
+                          <Badge variant={getBadgeVariant(app.status)} className="gap-1 items-center">
                              {React.createElement(statusIcons[app.status], { className: "h-3 w-3"})}
                             {app.status}
                           </Badge>
@@ -169,11 +179,11 @@ export default function ApplicationsTable({ applications, onAdd, onUpdate, onDel
                             </DropdownMenu>
                         </div>
                         <div className="flex items-center justify-between text-sm">
-                            <Badge variant={app.status === 'Rejected' ? 'destructive' : app.status.toLowerCase() as any} className="gap-1 items-center">
-                                {React.createElement(statusIcons[app.status], { className: "h-3 w-3"})}
-                                {app.status}
-                            </Badge>
-                            <span className="text-muted-foreground">{format(new Date(app.dateApplied), 'LLL dd, y')}</span>
+                          <Badge variant={getBadgeVariant(app.status)} className="gap-1 items-center">
+                              {React.createElement(statusIcons[app.status], { className: "h-3 w-3"})}
+                              {app.status}
+                          </Badge>
+                          <span className="text-muted-foreground">{format(new Date(app.dateApplied), 'LLL dd, y')}</span>
                         </div>
                     </CardContent>
                   </Card>
