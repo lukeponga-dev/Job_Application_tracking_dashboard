@@ -198,10 +198,15 @@ export default function ApplicationsTable({ applications, onAdd, onUpdate, onDel
                         </TableCell>
                         <TableCell>{format(new Date(app.dateApplied), 'LLL dd, y')}</TableCell>
                         <TableCell>
-                          <Badge variant={getBadgeVariant(app.status)} className="gap-1 items-center">
-                             {React.createElement(statusIcons[app.status], { className: "h-3 w-3"})}
-                            {app.status}
-                          </Badge>
+                          <div className='flex flex-col gap-2'>
+                            <Badge variant={getBadgeVariant(app.status)} className="gap-1 items-center w-fit">
+                              {React.createElement(statusIcons[app.status], { className: "h-3 w-3"})}
+                              {app.status}
+                            </Badge>
+                            {app.status === 'Rejected' && app.rejection_reason && (
+                              <p className="text-xs text-muted-foreground italic">Reason: {app.rejection_reason}</p>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell>
                           <DropdownMenu>
@@ -271,6 +276,9 @@ export default function ApplicationsTable({ applications, onAdd, onUpdate, onDel
                               </Badge>
                               <span className="text-muted-foreground">{format(new Date(app.dateApplied), 'LLL dd, y')}</span>
                             </div>
+                            {app.status === 'Rejected' && app.rejection_reason && (
+                              <p className="text-xs text-muted-foreground italic pt-2 border-t border-dashed">Reason: {app.rejection_reason}</p>
+                            )}
                         </div>
                     </CardContent>
                   </Card>

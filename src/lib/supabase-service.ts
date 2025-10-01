@@ -15,6 +15,7 @@ const fromApiResponse = (item: any): JobApplication => {
         status: item.status,
         site_applied_on: item.site_applied_on || null,
         notes: item.notes || null,
+        rejection_reason: item.rejection_reason || null,
     };
     return applicationSchema.parse(jobApplication);
 };
@@ -52,7 +53,7 @@ export async function createApplication(application: Omit<JobApplication, 'id' |
         throw new Error('User not authenticated');
     }
     
-    const { job_title, company_name, dateApplied, status, site_applied_on, notes } = application;
+    const { job_title, company_name, dateApplied, status, site_applied_on, notes, rejection_reason } = application;
     
     const { data, error } = await supabase
         .from('job_applications')
@@ -63,6 +64,7 @@ export async function createApplication(application: Omit<JobApplication, 'id' |
             status, 
             site_applied_on: site_applied_on || null,
             notes: notes || null,
+            rejection_reason: rejection_reason || null,
             user_id: user.id
         }])
         .select()
@@ -85,7 +87,7 @@ export async function updateApplication(application: JobApplication): Promise<Jo
         throw new Error('User not authenticated');
     }
 
-    const { id, job_title, company_name, dateApplied, status, site_applied_on, notes } = application;
+    const { id, job_title, company_name, dateApplied, status, site_applied_on, notes, rejection_reason } = application;
 
     const { data, error } = await supabase
         .from('job_applications')
@@ -95,7 +97,8 @@ export async function updateApplication(application: JobApplication): Promise<Jo
             date_applied: dateApplied.toISOString().slice(0, 10), 
             status, 
             site_applied_on: site_applied_on || null,
-            notes: notes || null
+            notes: notes || null,
+            rejection_reason: status === 'Rejected' ? rejection_reason : null,
         })
         .eq('id', id)
         .eq('user_id', user.id)

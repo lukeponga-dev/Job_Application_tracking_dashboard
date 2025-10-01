@@ -15,6 +15,7 @@ export const applicationSchema = z.object({
   status: statusEnum,
   site_applied_on: z.string().max(255).optional().nullable(),
   notes: z.string().optional().nullable(),
+  rejection_reason: z.string().optional().nullable(),
 });
 
 export type JobApplication = z.infer<typeof applicationSchema>;

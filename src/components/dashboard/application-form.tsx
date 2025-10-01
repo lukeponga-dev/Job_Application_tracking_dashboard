@@ -51,6 +51,8 @@ export default function ApplicationForm({ isOpen, setIsOpen, application, onAdd,
     resolver: zodResolver(formSchema),
   });
   
+  const status = form.watch('status');
+
   useEffect(() => {
     if(isOpen) {
       const defaultValues = application
@@ -61,7 +63,8 @@ export default function ApplicationForm({ isOpen, setIsOpen, application, onAdd,
             dateApplied: new Date(),
             status: 'Applied' as const,
             site_applied_on: '',
-            notes: ''
+            notes: '',
+            rejection_reason: '',
           };
       form.reset(defaultValues);
     }
@@ -200,6 +203,21 @@ export default function ApplicationForm({ isOpen, setIsOpen, application, onAdd,
                 )}
               />
             </div>
+             {status === 'Rejected' && (
+                <FormField
+                    control={form.control}
+                    name="rejection_reason"
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Rejection Reason</FormLabel>
+                        <FormControl>
+                        <Textarea placeholder="e.g. Overqualified, position filled, etc." {...field} value={field.value ?? ''} />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                />
+            )}
             <DialogFooter className="pt-4">
               <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>Cancel</Button>
               <Button type="submit">Save Application</Button>
