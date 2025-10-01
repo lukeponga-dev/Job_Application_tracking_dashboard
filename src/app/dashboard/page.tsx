@@ -11,6 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/auth-context';
 import StatusDistributionChart from '@/components/dashboard/status-distribution-chart';
+import ApplicationsOverTimeChart from '@/components/dashboard/applications-over-time-chart';
 
 export default function DashboardPage() {
   const [applications, setApplications] = useState<JobApplication[]>([]);
@@ -132,6 +133,11 @@ export default function DashboardPage() {
                 <Skeleton className="h-[300px]" />
             ) : (
                 <StatusDistributionChart applications={applications} />
+            )}
+            {isLoading ? (
+                <Skeleton className="h-[300px]" />
+            ) : (
+                <ApplicationsOverTimeChart applications={applications} />
             )}
             {isLoading ? (
                 <Skeleton className="h-[300px]" />
