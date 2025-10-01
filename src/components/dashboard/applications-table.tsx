@@ -94,13 +94,11 @@ export default function ApplicationsTable({ applications, onAdd, onUpdate, onDel
         </CardHeader>
         <CardContent>
             <Tabs value={filter} onValueChange={(value) => setFilter(value as Status | 'All')}>
-              <div className="overflow-x-auto">
-                <TabsList>
-                  {tabs.map((tab) => (
-                    <TabsTrigger key={tab} value={tab}>{tab}</TabsTrigger>
-                  ))}
-                </TabsList>
-              </div>
+              <TabsList className="grid w-full grid-cols-3 sm:grid-cols-5 h-auto">
+                {tabs.map((tab) => (
+                  <TabsTrigger key={tab} value={tab}>{tab}</TabsTrigger>
+                ))}
+              </TabsList>
             </Tabs>
 
             {/* Desktop Table View */}
