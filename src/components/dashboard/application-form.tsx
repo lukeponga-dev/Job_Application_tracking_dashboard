@@ -1,4 +1,3 @@
-
 "use client"
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -121,7 +120,7 @@ export default function ApplicationForm({ isOpen, setIsOpen, application, onAdd,
                 <FormItem>
                   <FormLabel>Site Applied On</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g. https://linkedin.com/jobs/..." {...field} value={field.value ?? ''} />
+                    <Input placeholder="e.g. LinkedIn, Seek" {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -134,7 +133,7 @@ export default function ApplicationForm({ isOpen, setIsOpen, application, onAdd,
                 <FormItem>
                   <FormLabel>Notes</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="e.g. Applied on seek" {...field} value={field.value ?? ''} />
+                    <Textarea placeholder="e.g. Spoke to John from HR" {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
