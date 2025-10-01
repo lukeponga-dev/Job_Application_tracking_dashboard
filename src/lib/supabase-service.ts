@@ -1,6 +1,7 @@
 'use server';
 
-import { createClient } from './supabase/server';
+import { cookies } from 'next/headers';
+import { createClient as createServerClient } from './supabase/server';
 import { JobApplication, applicationSchema } from './types';
 import { unstable_noStore as noStore } from 'next/cache';
 
@@ -20,7 +21,8 @@ const fromApiResponse = (item: any): JobApplication => {
 
 export async function getApplications(): Promise<JobApplication[]> {
     noStore();
-    const supabase = createClient();
+    const cookieStore = cookies();
+    const supabase = createServerClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
@@ -42,7 +44,8 @@ export async function getApplications(): Promise<JobApplication[]> {
 }
 
 export async function createApplication(application: Omit<JobApplication, 'id' | 'user_id'>): Promise<JobApplication | null> {
-    const supabase = createClient();
+    const cookieStore = cookies();
+    const supabase = createServerClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
@@ -74,7 +77,8 @@ export async function createApplication(application: Omit<JobApplication, 'id' |
 }
 
 export async function updateApplication(application: JobApplication): Promise<JobApplication | null> {
-    const supabase = createClient();
+    const cookieStore = cookies();
+    const supabase = createServerClient(cookieStore);
      const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
@@ -107,7 +111,8 @@ export async function updateApplication(application: JobApplication): Promise<Jo
 }
 
 export async function deleteApplication(id: string): Promise<void> {
-    const supabase = createClient();
+    const cookieStore = cookies();
+    const supabase = createServerClient(cookieStore);
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
