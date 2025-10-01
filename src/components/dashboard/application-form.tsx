@@ -40,13 +40,13 @@ interface ApplicationFormProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   application?: JobApplication;
-  onAdd: (app: Omit<JobApplication, 'id'>) => Promise<void>;
+  onAdd: (app: Omit<JobApplication, 'id' | 'user_id'>) => Promise<void>;
   onUpdate: (app: JobApplication) => Promise<void>;
 }
 
 export default function ApplicationForm({ isOpen, setIsOpen, application, onAdd, onUpdate }: ApplicationFormProps) {
-  const form = useForm<Omit<JobApplication, 'id'>>({
-    resolver: zodResolver(applicationSchema.omit({ id: true })),
+  const form = useForm<Omit<JobApplication, 'id' | 'user_id'>>({
+    resolver: zodResolver(applicationSchema.omit({ id: true, user_id: true })),
   });
   
   useEffect(() => {
@@ -65,9 +65,9 @@ export default function ApplicationForm({ isOpen, setIsOpen, application, onAdd,
     }
   }, [application, form, isOpen]);
 
-  const onSubmit = async (data: Omit<JobApplication, 'id'>) => {
+  const onSubmit = async (data: Omit<JobApplication, 'id' | 'user_id'>) => {
     if (application?.id) {
-      await onUpdate({ ...data, id: application.id });
+      await onUpdate({ ...data, id: application.id, user_id: application.user_id });
     } else {
       await onAdd(data);
     }
@@ -134,7 +134,7 @@ export default function ApplicationForm({ isOpen, setIsOpen, application, onAdd,
                     <Input placeholder="e.g. Applied on seek" {...field} />
                   </FormControl>
                   <FormMessage />
-                </FormItem>
+                </FormMItem>
               )}
             />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

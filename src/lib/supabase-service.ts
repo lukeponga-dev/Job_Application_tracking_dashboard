@@ -8,8 +8,9 @@ import { unstable_noStore as noStore } from 'next/cache';
 const fromApiResponse = (item: any): JobApplication => {
     const jobApplication: JobApplication = {
         id: item.id,
-        title: item.job_title,
-        company: item.company_name,
+        user_id: item.user_id,
+        job_title: item.job_title,
+        company_name: item.company_name,
         dateApplied: new Date(item.date_applied),
         status: item.status,
         site_applied_on: item.site_applied_on || '',
@@ -49,18 +50,18 @@ export async function createApplication(application: Omit<JobApplication, 'id'>)
         throw new Error('User not authenticated');
     }
     
-    const { title, company, dateApplied, status, site_applied_on, notes } = application;
+    const { job_title, company_name, dateApplied, status, site_applied_on, notes, user_id } = application;
     
     const { data, error } = await supabase
         .from('job_applications')
         .insert([{ 
-            job_title: title, 
-            company_name: company, 
+            job_title, 
+            company_name, 
             date_applied: dateApplied.toISOString().slice(0, 10), 
             status, 
             site_applied_on: site_applied_on || null,
             notes: notes || null,
-            user_id: user.id 
+            user_id
         }])
         .select()
         .single();
@@ -81,13 +82,13 @@ export async function updateApplication(application: JobApplication): Promise<Jo
         throw new Error('User not authenticated');
     }
 
-    const { id, title, company, dateApplied, status, site_applied_on, notes } = application;
+    const { id, job_title, company_name, dateApplied, status, site_applied_on, notes } = application;
 
     const { data, error } = await supabase
         .from('job_applications')
         .update({ 
-            job_title: title, 
-            company_name: company, 
+            job_title, 
+            company_name, 
             date_applied: dateApplied.toISOString().slice(0, 10), 
             status, 
             site_applied_on: site_applied_on || null,

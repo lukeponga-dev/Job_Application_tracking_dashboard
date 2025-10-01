@@ -31,7 +31,7 @@ import { format } from 'date-fns';
 
 interface ApplicationsTableProps {
   applications: JobApplication[];
-  onAdd: (app: Omit<JobApplication, 'id'>) => Promise<void>;
+  onAdd: (app: Omit<JobApplication, 'id' | 'user_id'>) => Promise<void>;
   onUpdate: (app: JobApplication) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
 }

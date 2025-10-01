@@ -39,9 +39,17 @@ export default function DashboardPage() {
     fetchApplications();
   }, [user, toast]);
 
-  const addApplication = async (app: Omit<JobApplication, 'id'>) => {
+  const addApplication = async (app: Omit<JobApplication, 'id' | 'user_id'>) => {
+    if (!user) {
+        toast({
+            variant: 'destructive',
+            title: 'Error',
+            description: 'You must be logged in to add an application.',
+        });
+        return;
+    }
     try {
-      const newApplication = await createApplication(app);
+      const newApplication = await createApplication({...app, user_id: user.id });
       if (newApplication) {
         setApplications(prev => [newApplication, ...prev]);
         toast({ title: "Application Added", description: `Your new application for ${app.job_title} has been added.` });
