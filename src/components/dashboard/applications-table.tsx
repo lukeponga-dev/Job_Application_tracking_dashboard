@@ -1,3 +1,4 @@
+
 "use client";
 import React, { useState, useMemo } from 'react';
 import { MoreHorizontal, PlusCircle, Award, FileText, Users, XCircle } from 'lucide-react';
@@ -30,9 +31,9 @@ import { format } from 'date-fns';
 
 interface ApplicationsTableProps {
   applications: JobApplication[];
-  onAdd: (app: Omit<JobApplication, 'id'>) => void;
-  onUpdate: (app: JobApplication) => void;
-  onDelete: (id: string) => void;
+  onAdd: (app: Omit<JobApplication, 'id'>) => Promise<void>;
+  onUpdate: (app: JobApplication) => Promise<void>;
+  onDelete: (id: string) => Promise<void>;
 }
 
 const statusIcons: Record<Status, React.ElementType> = {
@@ -62,7 +63,7 @@ export default function ApplicationsTable({ applications, onAdd, onUpdate, onDel
   }
 
   const sortedApplications = useMemo(() => {
-    return [...applications].sort((a, b) => b.dateApplied.getTime() - a.dateApplied.getTime());
+    return [...applications].sort((a, b) => new Date(b.dateApplied).getTime() - new Date(a.dateApplied).getTime());
   }, [applications]);
   
   const filteredApplications = useMemo(() => {
@@ -121,7 +122,7 @@ export default function ApplicationsTable({ applications, onAdd, onUpdate, onDel
                           <div className="font-medium">{app.title}</div>
                           <div className="text-sm text-muted-foreground">{app.company}</div>
                         </TableCell>
-                        <TableCell className="hidden md:table-cell">{format(app.dateApplied, 'LLL dd, y')}</TableCell>
+                        <TableCell className="hidden md:table-cell">{format(new Date(app.dateApplied), 'LLL dd, y')}</TableCell>
                         <TableCell>
                           <Badge variant={app.status === 'Rejected' ? 'destructive' : app.status.toLowerCase() as any} className="gap-1 items-center">
                              {React.createElement(statusIcons[app.status], { className: "h-3 w-3"})}

@@ -1,3 +1,4 @@
+
 "use client"
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -32,7 +33,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { applicationSchema, type JobApplication, statusEnum } from '@/lib/types';
 
@@ -40,38 +40,36 @@ interface ApplicationFormProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   application?: JobApplication;
-  onAdd: (app: Omit<JobApplication, 'id'>) => void;
-  onUpdate: (app: JobApplication) => void;
+  onAdd: (app: Omit<JobApplication, 'id'>) => Promise<void>;
+  onUpdate: (app: JobApplication) => Promise<void>;
 }
 
 export default function ApplicationForm({ isOpen, setIsOpen, application, onAdd, onUpdate }: ApplicationFormProps) {
-  const { toast } = useToast();
-  const form = useForm<JobApplication>({
-    resolver: zodResolver(applicationSchema),
+  const form = useForm<Omit<JobApplication, 'id'>>({
+    resolver: zodResolver(applicationSchema.omit({ id: true })),
   });
   
   useEffect(() => {
     if(isOpen) {
       const defaultValues = application
-        ? { ...application }
+        ? { ...application, dateApplied: application.dateApplied ? new Date(application.dateApplied) : new Date() }
         : {
             title: '',
             company: '',
             dateApplied: new Date(),
             status: 'Applied' as const,
             site_applied_on: '',
+            notes: ''
           };
       form.reset(defaultValues);
     }
   }, [application, form, isOpen]);
 
-  const onSubmit = (data: JobApplication) => {
+  const onSubmit = async (data: Omit<JobApplication, 'id'>) => {
     if (application?.id) {
-      onUpdate({ ...data, id: application.id });
-      toast({ title: "Application Updated", description: `Details for ${data.title} at ${data.company} have been saved.` });
+      await onUpdate({ ...data, id: application.id });
     } else {
-      onAdd(data);
-      toast({ title: "Application Added", description: `Your new application for ${data.title} has been added.` });
+      await onAdd(data);
     }
     setIsOpen(false);
   };
@@ -126,6 +124,19 @@ export default function ApplicationForm({ isOpen, setIsOpen, application, onAdd,
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="notes"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Notes</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g. Applied on seek" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -167,7 +178,7 @@ export default function ApplicationForm({ isOpen, setIsOpen, application, onAdd,
                               !field.value && 'text-muted-foreground'
                             )}
                           >
-                            {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
+                            {field.value ? format(new Date(field.value), 'PPP') : <span>Pick a date</span>}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
                         </FormControl>
@@ -175,7 +186,7 @@ export default function ApplicationForm({ isOpen, setIsOpen, application, onAdd,
                       <PopoverContent className="w-auto p-0" align="start">
                         <Calendar
                           mode="single"
-                          selected={field.value}
+                          selected={field.value ? new Date(field.value) : undefined}
                           onSelect={field.onChange}
                           disabled={date => date > new Date() || date < new Date('2000-01-01')}
                           initialFocus

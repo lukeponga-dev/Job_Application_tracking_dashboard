@@ -1,0 +1,127 @@
+
+'use server';
+
+import { createClient } from './supabase/server';
+import { JobApplication, applicationSchema } from './types';
+import { unstable_noStore as noStore } from 'next/cache';
+
+const fromApiResponse = (item: any): JobApplication => {
+    const jobApplication: JobApplication = {
+        id: item.id,
+        title: item.job_title,
+        company: item.company_name,
+        dateApplied: new Date(item.date_applied),
+        status: item.status,
+        site_applied_on: item.site_applied_on || '',
+        notes: item.notes || '',
+    };
+    return applicationSchema.parse(jobApplication);
+};
+
+export async function getApplications(): Promise<JobApplication[]> {
+    noStore();
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+        return [];
+    }
+
+    const { data, error } = await supabase
+        .from('job_applications')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('date_applied', { ascending: false });
+
+    if (error) {
+        console.error('Error fetching applications:', error);
+        throw new Error('Failed to fetch job applications.');
+    }
+
+    return data.map(fromApiResponse);
+}
+
+export async function createApplication(application: Omit<JobApplication, 'id'>): Promise<JobApplication | null> {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+        throw new Error('User not authenticated');
+    }
+    
+    const { title, company, dateApplied, status, site_applied_on, notes } = application;
+    
+    const { data, error } = await supabase
+        .from('job_applications')
+        .insert([{ 
+            job_title: title, 
+            company_name: company, 
+            date_applied: dateApplied.toISOString().slice(0, 10), 
+            status, 
+            site_applied_on: site_applied_on || null,
+            notes: notes || null,
+            user_id: user.id 
+        }])
+        .select()
+        .single();
+
+    if (error) {
+        console.error('Error creating application:', error);
+        throw new Error('Failed to create job application.');
+    }
+
+    return fromApiResponse(data);
+}
+
+export async function updateApplication(application: JobApplication): Promise<JobApplication | null> {
+    const supabase = createClient();
+     const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+        throw new Error('User not authenticated');
+    }
+
+    const { id, title, company, dateApplied, status, site_applied_on, notes } = application;
+
+    const { data, error } = await supabase
+        .from('job_applications')
+        .update({ 
+            job_title: title, 
+            company_name: company, 
+            date_applied: dateApplied.toISOString().slice(0, 10), 
+            status, 
+            site_applied_on: site_applied_on || null,
+            notes: notes || null
+        })
+        .eq('id', id)
+        .eq('user_id', user.id)
+        .select()
+        .single();
+
+    if (error) {
+        console.error('Error updating application:', error);
+        throw new Error('Failed to update job application.');
+    }
+
+    return fromApiResponse(data);
+}
+
+export async function deleteApplication(id: string): Promise<void> {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+        throw new Error('User not authenticated');
+    }
+
+    const { error } = await supabase
+        .from('job_applications')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', user.id);
+
+    if (error) {
+        console.error('Error deleting application:', error);
+        throw new Error('Failed to delete job application.');
+    }
+}
