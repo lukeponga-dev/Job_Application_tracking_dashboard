@@ -4,6 +4,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { Session, User, AuthChangeEvent, AuthError, SignInWithPasswordCredentials, SignUpWithPasswordCredentials } from '@supabase/supabase-js'
+import { useRouter } from 'next/navigation'
 
 const supabase = createClient()
 
@@ -21,6 +22,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
+  const router = useRouter()
 
   useEffect(() => {
     const getSession = async () => {
@@ -54,6 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     await supabase.auth.signOut()
+    router.push('/login')
   }
 
   const signInWithGoogle = async () => {
