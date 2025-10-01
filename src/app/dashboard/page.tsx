@@ -10,6 +10,7 @@ import { getApplications, createApplication, updateApplication as updateApplicat
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/auth-context';
+import StatusDistributionChart from '@/components/dashboard/status-distribution-chart';
 
 export default function DashboardPage() {
   const [applications, setApplications] = useState<JobApplication[]>([]);
@@ -121,7 +122,12 @@ export default function DashboardPage() {
               />
             )}
           </div>
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 space-y-8">
+            {isLoading ? (
+                <Skeleton className="h-[300px]" />
+            ) : (
+                <StatusDistributionChart applications={applications} />
+            )}
             {isLoading ? (
                 <Skeleton className="h-[300px]" />
             ) : (
