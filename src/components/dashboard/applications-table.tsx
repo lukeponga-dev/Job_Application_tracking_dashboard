@@ -102,12 +102,14 @@ export default function ApplicationsTable({ applications, onAdd, onUpdate, onDel
                 </TabsList>
               </div>
             </Tabs>
-            <div className="rounded-md border mt-4">
+
+            {/* Desktop Table View */}
+            <div className="hidden md:block rounded-md border mt-4">
               <Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Company</TableHead>
-                    <TableHead className="hidden md:table-cell">Date Applied</TableHead>
+                    <TableHead>Date Applied</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>
                       <span className="sr-only">Actions</span>
@@ -122,7 +124,7 @@ export default function ApplicationsTable({ applications, onAdd, onUpdate, onDel
                           <div className="font-medium">{app.job_title}</div>
                           <div className="text-sm text-muted-foreground">{app.company_name}</div>
                         </TableCell>
-                        <TableCell className="hidden md:table-cell">{format(new Date(app.dateApplied), 'LLL dd, y')}</TableCell>
+                        <TableCell>{format(new Date(app.dateApplied), 'LLL dd, y')}</TableCell>
                         <TableCell>
                           <Badge variant={app.status === 'Rejected' ? 'destructive' : app.status.toLowerCase() as any} className="gap-1 items-center">
                              {React.createElement(statusIcons[app.status], { className: "h-3 w-3"})}
@@ -155,6 +157,48 @@ export default function ApplicationsTable({ applications, onAdd, onUpdate, onDel
                   )}
                 </TableBody>
               </Table>
+            </div>
+            
+            {/* Mobile Card View */}
+            <div className="md:hidden space-y-4 mt-4">
+               {filteredApplications.length > 0 ? (
+                filteredApplications.map(app => (
+                  <Card key={app.id} className="w-full">
+                    <CardContent className="p-4 flex flex-col gap-4">
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <div className="font-semibold">{app.job_title}</div>
+                                <div className="text-sm text-muted-foreground">{app.company_name}</div>
+                            </div>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                <Button aria-haspopup="true" size="icon" variant="ghost">
+                                    <MoreHorizontal className="h-4 w-4" />
+                                    <span className="sr-only">Toggle menu</span>
+                                </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                <DropdownMenuItem onSelect={() => handleEditClick(app)}>Edit</DropdownMenuItem>
+                                <DropdownMenuItem onSelect={() => handleDeleteClick(app.id!)} className="text-destructive focus:text-destructive focus:bg-destructive/10">Delete</DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </div>
+                        <div className="flex items-center justify-between text-sm">
+                            <Badge variant={app.status === 'Rejected' ? 'destructive' : app.status.toLowerCase() as any} className="gap-1 items-center">
+                                {React.createElement(statusIcons[app.status], { className: "h-3 w-3"})}
+                                {app.status}
+                            </Badge>
+                            <span className="text-muted-foreground">{format(new Date(app.dateApplied), 'LLL dd, y')}</span>
+                        </div>
+                    </CardContent>
+                  </Card>
+                ))
+                ) : (
+                    <div className="h-24 text-center flex items-center justify-center">
+                      No applications found for this status.
+                    </div>
+                )}
             </div>
         </CardContent>
       </Card>
