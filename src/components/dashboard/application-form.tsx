@@ -119,7 +119,7 @@ export default function ApplicationForm({ isOpen, setIsOpen, application, onAdd,
               name="site_applied_on"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Website/Link</FormLabel>
+                  <FormLabel>Site Applied On</FormLabel>
                   <FormControl>
                     <Input placeholder="e.g. https://linkedin.com/jobs/..." {...field} value={field.value ?? ''} />
                   </FormControl>
