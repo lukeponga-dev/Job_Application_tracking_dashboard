@@ -13,8 +13,10 @@ import { useAuth } from '@/contexts/auth-context';
 import StatusDistributionChart from '@/components/dashboard/status-distribution-chart';
 import ApplicationsOverTimeChart from '@/components/dashboard/applications-over-time-chart';
 import { Button } from '../ui/button';
-import { PlusCircle } from 'lucide-react';
+import { PlusCircle, Download } from 'lucide-react';
 import ApplicationForm from './application-form';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import { exportToCSV, exportToJSON } from '@/lib/export';
 
 interface DashboardClientProps {
   initialApplications: JobApplication[];
@@ -121,10 +123,24 @@ export default function DashboardClient({ initialApplications }: DashboardClient
         />
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <h1 className="text-3xl font-bold tracking-tight text-foreground">My Applications</h1>
-            <Button onClick={handleAddClick} size="sm" className="gap-2 shrink-0">
-              <PlusCircle className="h-4 w-4" />
-              Add Application
-            </Button>
+            <div className="flex items-center gap-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <Download className="h-4 w-4" />
+                    Export
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onSelect={() => exportToCSV(applications)}>Export as CSV</DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => exportToJSON(applications)}>Export as JSON</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <Button onClick={handleAddClick} size="sm" className="gap-2 shrink-0">
+                <PlusCircle className="h-4 w-4" />
+                Add Application
+              </Button>
+            </div>
         </div>
         {isLoading ? (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
