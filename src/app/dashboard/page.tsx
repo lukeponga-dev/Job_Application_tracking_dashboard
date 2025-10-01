@@ -2,7 +2,6 @@
 "use client";
 
 import { useState } from 'react';
-import { initialApplications } from '@/lib/data';
 import type { JobApplication } from '@/lib/types';
 import ApplicationsTable from '@/components/dashboard/applications-table';
 import StatsCards from '@/components/dashboard/stats-cards';
@@ -10,7 +9,7 @@ import VisualizationSuggestions from '@/components/dashboard/visualization-sugge
 import DashboardLayout from './layout';
 
 export default function DashboardPage() {
-  const [applications, setApplications] = useState<JobApplication[]>(initialApplications);
+  const [applications, setApplications] = useState<JobApplication[]>([]);
 
   const addApplication = (app: Omit<JobApplication, 'id'>) => {
     setApplications(prev => [...prev, { ...app, id: Date.now().toString() }]);
