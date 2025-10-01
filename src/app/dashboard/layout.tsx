@@ -64,7 +64,7 @@ export default function DashboardLayout({
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
-        <header className="flex h-12 items-center justify-between border-b bg-background px-4 md:justify-end">
+        <header className="flex h-14 items-center justify-between border-b bg-background px-4 shadow-sm sm:px-6 md:justify-end">
             <SidebarTrigger className="md:hidden" />
             <div className='flex items-center gap-4'>
               <ThemeToggle />
