@@ -14,7 +14,7 @@ export const applicationSchema = z.object({
     required_error: "A date of application is required.",
   }),
   status: statusEnum,
-  site_applied_on: z.string().url().optional().or(z.literal('')).nullable(),
+  site_applied_on: z.string().max(255).optional().nullable(),
   notes: z.string().optional().nullable(),
 });
 
