@@ -35,6 +35,7 @@ import {
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { applicationSchema, type JobApplication, statusEnum } from '@/lib/types';
+import { Textarea } from '../ui/textarea';
 
 interface ApplicationFormProps {
   isOpen: boolean;
@@ -131,10 +132,10 @@ export default function ApplicationForm({ isOpen, setIsOpen, application, onAdd,
                 <FormItem>
                   <FormLabel>Notes</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g. Applied on seek" {...field} />
+                    <Textarea placeholder="e.g. Applied on seek" {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
-                </FormMItem>
+                </FormItem>
               )}
             />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
