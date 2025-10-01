@@ -94,6 +94,21 @@ export default function DashboardClient({ initialApplications }: DashboardClient
         });
     }
   };
+  
+  const deleteMultipleApplications = async (ids: string[]) => {
+    try {
+      await Promise.all(ids.map(id => deleteApplicationFromDb(id)));
+      setApplications(prev => prev.filter(a => !ids.includes(a.id)));
+      toast({ title: "Applications Deleted", description: `${ids.length} applications have been deleted.` });
+    } catch (error) {
+      console.error('Error deleting multiple applications:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to delete selected applications.',
+      });
+    }
+  };
 
   return (
       <div className="p-4 sm:p-6 md:p-8 space-y-8">
@@ -128,6 +143,7 @@ export default function DashboardClient({ initialApplications }: DashboardClient
                 onAdd={addApplication}
                 onUpdate={updateApplication}
                 onDelete={deleteApplication}
+                onDeleteMultiple={deleteMultipleApplications}
               />
             )}
           </div>
