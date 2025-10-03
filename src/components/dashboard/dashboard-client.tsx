@@ -48,6 +48,37 @@ export default function DashboardClient({ initialApplications }: DashboardClient
     fileInputRef.current?.click();
   };
   
+  const parseDate = (dateString: string): Date | null => {
+    if (!dateString) return null;
+
+    // Try creating a date directly, works for YYYY-MM-DD
+    const directDate = new Date(dateString);
+    if (!isNaN(directDate.getTime())) {
+      return directDate;
+    }
+
+    // Handle MM/DD/YYYY
+    if (dateString.includes('/')) {
+        const parts = dateString.split('/');
+        if (parts.length === 3) {
+            // new Date(year, monthIndex, day)
+            const year = parseInt(parts[2], 10);
+            const month = parseInt(parts[0], 10) - 1; // Month is 0-indexed
+            const day = parseInt(parts[1], 10);
+            
+            // Basic validation
+            if(year > 1900 && month >= 0 && month < 12 && day > 0 && day <= 31) {
+                const parsed = new Date(year, month, day);
+                if (!isNaN(parsed.getTime())) {
+                    return parsed;
+                }
+            }
+        }
+    }
+    
+    return null; // Return null if parsing fails
+  }
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -58,18 +89,18 @@ export default function DashboardClient({ initialApplications }: DashboardClient
         complete: async (results) => {
           try {
             const parsedApps = results.data.map((row: any) => {
-              const dateApplied = new Date(row.dateApplied);
-              if (isNaN(dateApplied.getTime())) {
-                throw new Error(`Invalid date format for row: ${JSON.stringify(row)}`);
+              const dateApplied = parseDate(row.dateApplied || row['Date Applied']);
+              if (!dateApplied) {
+                throw new Error(`Invalid or missing date format for row: ${JSON.stringify(row)}`);
               }
               return {
-                job_title: row.job_title || '',
-                company_name: row.company_name || '',
+                job_title: row.job_title || row['Job Title'] || '',
+                company_name: row.company_name || row['Company'] || '',
                 dateApplied: dateApplied,
-                status: statusEnum.parse(row.status || 'Applied'),
-                site_applied_on: row.site_applied_on || null,
-                notes: row.notes || null,
-                rejection_reason: row.rejection_reason || null,
+                status: statusEnum.parse(row.status || row['Status'] || 'Applied'),
+                site_applied_on: row.site_applied_on || row['Applied On'] || null,
+                notes: row.notes || row['Notes'] || null,
+                rejection_reason: row.rejection_reason || row['Rejection Reason'] || null,
               };
             }).filter(app => app.job_title && app.company_name);
 
@@ -273,3 +304,5 @@ export default function DashboardClient({ initialApplications }: DashboardClient
       </div>
   );
 }
+
+    
