@@ -1,17 +1,24 @@
 
-import { defineFlow } from '@genkit-ai/flow';
-import { generate } from '@genkit-ai/core';
-import { googleAI } from '@genkit-ai/google-genai';
-import * as z from 'zod';
+'use server';
 
-export const simpleTextPromptFlow = defineFlow(
+/**
+ * @fileOverview A simple text prompt AI agent.
+ *
+ * - simpleTextPromptFlow - A function that takes a string prompt and returns the model's response.
+ */
+
+import {ai} from '@/ai/genkit';
+import {z} from 'genkit';
+import { googleAI } from '@genkit-ai/google-genai';
+
+export const simpleTextPromptFlow = ai.defineFlow(
   {
-    name: 'simpleTextPrompt',
+    name: 'simpleTextPromptFlow',
     inputSchema: z.string(),
     outputSchema: z.string(),
   },
   async (prompt) => {
-    const llmResponse = await generate({
+    const llmResponse = await ai.generate({
       model: googleAI.model('gemini-1.5-flash-latest'),
       prompt: prompt,
     });
