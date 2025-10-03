@@ -4,14 +4,18 @@
 /**
  * @fileOverview A simple text prompt AI agent.
  *
- * - simpleTextPromptFlow - A function that takes a string prompt and returns the model's response.
+ * - simpleTextPrompt - A function that takes a string prompt and returns the model's response.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import { googleAI } from '@genkit-ai/google-genai';
 
-export const simpleTextPromptFlow = ai.defineFlow(
+export async function simpleTextPrompt(prompt: string): Promise<string> {
+    return simpleTextPromptFlow(prompt);
+}
+
+const simpleTextPromptFlow = ai.defineFlow(
   {
     name: 'simpleTextPromptFlow',
     inputSchema: z.string(),
@@ -23,6 +27,7 @@ export const simpleTextPromptFlow = ai.defineFlow(
       prompt: prompt,
     });
 
-    return llmResponse.text();
+    return llmResponse.text;
   }
 );
+
