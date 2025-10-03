@@ -14,6 +14,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Wand2, Loader2, Clipboard, ClipboardCheck, FileText, FileUp } from 'lucide-react';
 import { Form, FormField, FormItem, FormControl, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import mammoth from 'mammoth';
+import pdf from 'pdf-parse/lib/pdf-parse';
 
 const cvTailorSchema = z.object({
   jobDescription: z.string().min(50, 'Job description must be at least 50 characters long.'),
@@ -37,25 +39,40 @@ export default function CvTailorPage() {
     },
   });
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      if (file.type === 'text/plain' || file.type === 'text/markdown') {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const text = e.target?.result as string;
-          form.setValue('currentCv', text, { shouldValidate: true });
+      try {
+        let text = '';
+        if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+          const arrayBuffer = await file.arrayBuffer();
+          const result = await mammoth.extractRawText({ arrayBuffer });
+          text = result.value;
+        } else if (file.type === 'application/pdf') {
+          const arrayBuffer = await file.arrayBuffer();
+          const data = await pdf(arrayBuffer);
+          text = data.text;
+        } else if (file.type === 'text/plain' || file.type === 'text/markdown') {
+          text = await file.text();
+        } else {
           toast({
-            title: 'CV Uploaded',
-            description: `${file.name} has been loaded.`,
-          });
-        };
-        reader.readAsText(file);
-      } else {
-        toast({
             variant: 'destructive',
             title: 'Invalid File Type',
-            description: 'Please upload a .txt or .md file.',
+            description: 'Please upload a .docx, .pdf, .txt, or .md file.',
+          });
+          return;
+        }
+        form.setValue('currentCv', text, { shouldValidate: true });
+        toast({
+          title: 'CV Uploaded',
+          description: `${file.name} has been loaded.`,
+        });
+      } catch (error) {
+        console.error('Error reading file:', error);
+        toast({
+          variant: 'destructive',
+          title: 'Error Reading File',
+          description: 'Could not extract text from the uploaded file.',
         });
       }
     }
@@ -159,7 +176,7 @@ export default function CvTailorPage() {
                           ref={fileInputRef}
                           onChange={handleFileChange}
                           className="hidden"
-                          accept=".txt,.md"
+                          accept=".docx,.pdf,.txt,.md"
                         />
                       </div>
                       <FormControl>

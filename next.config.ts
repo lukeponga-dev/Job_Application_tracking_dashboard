@@ -30,6 +30,16 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+   webpack: (config, { isServer }) => {
+    if (!isServer) {
+        // Exclude fs from being bundled on the client side
+        config.resolve.fallback = {
+            ...config.resolve.fallback,
+            fs: false,
+        };
+    }
+    return config;
+  },
 };
 
 export default nextConfig;
