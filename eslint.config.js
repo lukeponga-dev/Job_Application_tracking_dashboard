@@ -24,4 +24,3 @@ module.exports = [
     },
   },
 ];
-AIzaSyCEMuf2TRvqmnFCOviksmgagfoWkLJg31U
