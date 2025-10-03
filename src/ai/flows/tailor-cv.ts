@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -10,6 +11,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { googleAI } from '@genkit-ai/google-genai';
 
 const TailorCvInputSchema = z.object({
   jobDescription: z.string().describe('The job description to tailor the CV for.'),
@@ -46,6 +48,7 @@ Job Description:
 Current CV:
 {{{currentCv}}}
   `,
+  model: googleAI.model('gemini-1.5-flash-latest'),
 });
 
 const tailorCvFlow = ai.defineFlow(

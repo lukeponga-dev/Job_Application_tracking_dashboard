@@ -1,6 +1,7 @@
+
 import { defineFlow } from '@genkit-ai/flow';
 import { generate } from '@genkit-ai/core';
-import { gemini15Flash } from '@genkit-ai/google-genai';
+import { googleAI } from '@genkit-ai/google-genai';
 import * as z from 'zod';
 
 export const simpleTextPromptFlow = defineFlow(
@@ -11,7 +12,7 @@ export const simpleTextPromptFlow = defineFlow(
   },
   async (prompt) => {
     const llmResponse = await generate({
-      model: gemini15Flash,
+      model: googleAI.model('gemini-1.5-flash-latest'),
       prompt: prompt,
     });
 

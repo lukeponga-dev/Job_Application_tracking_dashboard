@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -10,6 +11,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { googleAI } from '@genkit-ai/google-genai';
 
 const DataVisualizationSuggestionsInputSchema = z.object({
   jobApplicationData: z.string().describe('The job application data in JSON format.'),
@@ -47,6 +49,7 @@ const prompt = ai.definePrompt({
 
   Please provide your suggestions as a list of strings.
   `,
+  model: googleAI.model('gemini-1.5-flash-latest'),
 });
 
 const dataVisualizationSuggestionsFlow = ai.defineFlow(
