@@ -562,6 +562,7 @@ const SidebarMenuButton = React.forwardRef<
 
     const buttonContent = (
         <Comp
+          ref={ref}
           data-sidebar="menu-button"
           data-size={size}
           data-active={isActive}
@@ -571,10 +572,10 @@ const SidebarMenuButton = React.forwardRef<
     )
 
     const button = href ? (
-      <NextLink href={href} passHref legacyBehavior>
-         {React.cloneElement(buttonContent, { ref })}
+      <NextLink href={href} passHref>
+        {buttonContent}
       </NextLink>
-    ) : React.cloneElement(buttonContent, { ref });
+    ) : buttonContent;
     
     if (!tooltip) {
       return button
