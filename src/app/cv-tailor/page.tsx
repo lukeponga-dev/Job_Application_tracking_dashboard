@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -11,8 +11,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Wand2, Loader2, Clipboard, ClipboardCheck, FileText } from 'lucide-react';
+import { Wand2, Loader2, Clipboard, ClipboardCheck, FileText, FileUp } from 'lucide-react';
 import { Form, FormField, FormItem, FormControl, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 
 const cvTailorSchema = z.object({
   jobDescription: z.string().min(50, 'Job description must be at least 50 characters long.'),
@@ -26,6 +27,7 @@ export default function CvTailorPage() {
   const [tailoredCv, setTailoredCv] = useState('');
   const [hasCopied, setHasCopied] = useState(false);
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<CvTailorFormInputs>({
     resolver: zodResolver(cvTailorSchema),
@@ -34,6 +36,31 @@ export default function CvTailorPage() {
       currentCv: '',
     },
   });
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.type === 'text/plain' || file.type === 'text/markdown') {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const text = e.target?.result as string;
+          form.setValue('currentCv', text, { shouldValidate: true });
+          toast({
+            title: 'CV Uploaded',
+            description: `${file.name} has been loaded.`,
+          });
+        };
+        reader.readAsText(file);
+      } else {
+        toast({
+            variant: 'destructive',
+            title: 'Invalid File Type',
+            description: 'Please upload a .txt or .md file.',
+        });
+      }
+    }
+  };
+
 
   const onSubmit = async (data: CvTailorFormInputs) => {
     setIsLoading(true);
@@ -115,11 +142,30 @@ export default function CvTailorPage() {
                   name="currentCv"
                   render={({ field }) => (
                     <FormItem>
-                      <Label htmlFor="current-cv">Your Current CV</Label>
+                      <div className="flex justify-between items-center mb-2">
+                        <Label htmlFor="current-cv">Your Current CV</Label>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => fileInputRef.current?.click()}
+                            disabled={isLoading}
+                        >
+                            <FileUp className="mr-2 h-4 w-4" />
+                            Upload CV
+                        </Button>
+                        <Input
+                          type="file"
+                          ref={fileInputRef}
+                          onChange={handleFileChange}
+                          className="hidden"
+                          accept=".txt,.md"
+                        />
+                      </div>
                       <FormControl>
                         <Textarea
                           id="current-cv"
-                          placeholder="Paste your current CV text here..."
+                          placeholder="Paste your current CV text here, or upload a file..."
                           className="min-h-[300px] text-sm"
                           {...field}
                           disabled={isLoading}
