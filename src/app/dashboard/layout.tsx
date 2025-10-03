@@ -12,13 +12,14 @@ import {
   SidebarFooter,
   SidebarInset,
 } from '@/components/ui/sidebar';
-import { LayoutDashboard, LogOut, User, PlusCircle, Settings } from 'lucide-react';
+import { LayoutDashboard, LogOut, User, PlusCircle, Settings, FileText } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/contexts/auth-context';
 import { ThemeToggle } from '@/components/theme-toggle';
 import ApplicationForm from '@/components/dashboard/application-form';
 import { useState } from 'react';
 import type { JobApplication } from '@/lib/types';
+import { usePathname } from 'next/navigation';
 
 export default function DashboardLayout({
   children,
@@ -26,6 +27,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { user, signOut } = useAuth();
+  const pathname = usePathname();
 
   return (
     <SidebarProvider>
@@ -49,13 +51,19 @@ export default function DashboardLayout({
           </SidebarHeader>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton href="/dashboard" isActive>
+              <SidebarMenuButton href="/dashboard" isActive={pathname === '/dashboard'}>
                 <LayoutDashboard />
                 My Applications
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-                <SidebarMenuButton href="/profile">
+              <SidebarMenuButton href="/cv-tailor" isActive={pathname === '/cv-tailor'}>
+                <FileText />
+                CV Tailor
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+                <SidebarMenuButton href="/profile" isActive={pathname === '/profile'}>
                     <Settings />
                     Profile
                 </SidebarMenuButton>
