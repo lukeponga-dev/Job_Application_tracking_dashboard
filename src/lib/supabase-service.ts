@@ -78,6 +78,39 @@ export async function createApplication(application: Omit<JobApplication, 'id' |
     return fromApiResponse(data);
 }
 
+export async function createMultipleApplications(applications: Omit<JobApplication, 'id' | 'user_id'>[]): Promise<JobApplication[]> {
+    const cookieStore = cookies();
+    const supabase = createServerClient(cookieStore);
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+        throw new Error('User not authenticated');
+    }
+
+    const applicationsToInsert = applications.map(app => ({
+        ...app,
+        date_applied: app.dateApplied.toISOString().slice(0, 10),
+        user_id: user.id,
+    }));
+    
+    // Remove dateApplied from the objects to match the database schema
+    const dbReadyApps = applicationsToInsert.map(({ dateApplied, ...rest }) => rest);
+
+
+    const { data, error } = await supabase
+        .from('job_applications')
+        .insert(dbReadyApps)
+        .select();
+
+    if (error) {
+        console.error('Error creating multiple applications:', error);
+        throw new Error('Failed to create multiple job applications.');
+    }
+
+    return data.map(fromApiResponse);
+}
+
+
 export async function updateApplication(application: JobApplication): Promise<JobApplication | null> {
     const cookieStore = cookies();
     const supabase = createServerClient(cookieStore);
