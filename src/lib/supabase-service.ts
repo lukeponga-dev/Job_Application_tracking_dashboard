@@ -136,15 +136,19 @@ export async function updateApplication(application: JobApplication): Promise<Jo
         })
         .eq('id', id)
         .eq('user_id', user.id)
-        .select()
-        .single();
+        .select();
 
     if (error) {
         console.error('Error updating application:', error);
         throw new Error('Failed to update job application.');
     }
+    
+    if (!data || data.length === 0) {
+        console.warn(`Update for application ID ${id} affected 0 rows. This might indicate a permissions issue or an incorrect ID.`);
+        return null;
+    }
 
-    return fromApiResponse(data);
+    return fromApiResponse(data[0]);
 }
 
 export async function deleteApplication(id: string): Promise<void> {
