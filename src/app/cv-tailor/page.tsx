@@ -15,7 +15,11 @@ import { Wand2, Loader2, Clipboard, ClipboardCheck, FileText, FileUp } from 'luc
 import { Form, FormField, FormItem, FormControl, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import mammoth from 'mammoth';
-import pdf from 'pdf-parse/lib/pdf-parse';
+import * as pdfjs from 'pdfjs-dist';
+
+// Set up the worker
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+
 
 const cvTailorSchema = z.object({
   jobDescription: z.string().min(50, 'Job description must be at least 50 characters long.'),
@@ -50,8 +54,16 @@ export default function CvTailorPage() {
           text = result.value;
         } else if (file.type === 'application/pdf') {
           const arrayBuffer = await file.arrayBuffer();
-          const data = await pdf(arrayBuffer);
-          text = data.text;
+          const loadingTask = pdfjs.getDocument(arrayBuffer);
+          const pdf = await loadingTask.promise;
+          const numPages = pdf.numPages;
+          let pdfText = '';
+          for (let i = 1; i <= numPages; i++) {
+            const page = await pdf.getPage(i);
+            const textContent = await page.getTextContent();
+            pdfText += textContent.items.map(item => ('str' in item ? item.str : '')).join(' ');
+          }
+          text = pdfText;
         } else if (file.type === 'text/plain' || file.type === 'text/markdown') {
           text = await file.text();
         } else {

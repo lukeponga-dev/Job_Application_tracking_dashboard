@@ -24,22 +24,12 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
-        protocol: 'https',
+        protocol: 'https'
         hostname: 'picsum.photos',
         port: '',
         pathname: '/**',
       },
     ],
-  },
-   webpack: (config, { isServer }) => {
-    if (!isServer) {
-        // Exclude fs from being bundled on the client side
-        config.resolve.fallback = {
-            ...config.resolve.fallback,
-            fs: false,
-        };
-    }
-    return config;
   },
 };
 
